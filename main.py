@@ -170,7 +170,17 @@ def button_handler(update: Update, context: CallbackContext):
                 context.bot.send_voice(chat_id=CHANNEL_ID, voice=content)
 
             context.bot.send_message(chat_id=chat_id, text="Xabaringiz tasdiqlandi va kanalga yuborildi!")
-            query.edit_message_text(query.message.text + "\n\n✅ Tasdiqlandi")
+            try:
+                query.edit_message_reply_markup(reply_markup=None)
+            except:
+                pass
+            try:
+                query.edit_message_caption(caption=(query.message.caption or "") + "\n\n✅ Tasdiqlandi")
+            except:
+                try:
+                    query.edit_message_text(query.message.text + "\n\n✅ Tasdiqlandi")
+                except:
+                    pass
             del pending[key]
 
         except Exception as e:
@@ -178,7 +188,17 @@ def button_handler(update: Update, context: CallbackContext):
 
     elif action == "reject":
         context.bot.send_message(chat_id=chat_id, text="Xabaringiz rad etildi.")
-        query.edit_message_text(query.message.text + "\n\n❌ Rad etildi")
+        try:
+            query.edit_message_reply_markup(reply_markup=None)
+        except:
+            pass
+        try:
+            query.edit_message_caption(caption=(query.message.caption or "") + "\n\n❌ Rad etildi")
+        except:
+            try:
+                query.edit_message_text(query.message.text + "\n\n❌ Rad etildi")
+            except:
+                pass
         del pending[key]
 
 def main():
