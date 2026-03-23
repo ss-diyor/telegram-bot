@@ -92,10 +92,11 @@ def forward_message(update: Update, context: CallbackContext):
         elif msg.photo:
             pending[key]["type"] = "photo"
             pending[key]["content"] = msg.photo[-1].file_id
+            pending[key]["caption"] = msg.caption or ""
             context.bot.send_photo(
                 chat_id=ADMIN_ID,
                 photo=msg.photo[-1].file_id,
-                caption=f"{user_info} dan rasm",
+                caption=f"{user_info} dan rasm\n{msg.caption or ''}",
                 reply_markup=keyboard
             )
         elif msg.video:
@@ -119,6 +120,10 @@ def forward_message(update: Update, context: CallbackContext):
         elif msg.voice:
             pending[key]["type"] = "voice"
             pending[key]["content"] = msg.voice.file_id
+            context.bot.send_message(
+                chat_id=ADMIN_ID,
+                text=f"{user_info} dan ovozli xabar:",
+            )
             context.bot.send_voice(
                 chat_id=ADMIN_ID,
                 voice=msg.voice.file_id,
