@@ -74,29 +74,6 @@ def forward_message(update: Update, context: CallbackContext):
             "caption": msg.caption or ""
         }
 
-        if msg.text:
-            pending[key]["type"] = "text"
-            pending[key]["content"] = msg.text
-            admin_text = f"{user_info} dan xabar:\n\n{msg.text}"
-        elif msg.photo:
-            pending[key]["type"] = "photo"
-            pending[key]["content"] = msg.photo[-1].file_id
-            admin_text = f"{user_info} dan rasm"
-        elif msg.video:
-            pending[key]["type"] = "video"
-            pending[key]["content"] = msg.video.file_id
-            admin_text = f"{user_info} dan video"
-        elif msg.document:
-            pending[key]["type"] = "document"
-            pending[key]["content"] = msg.document.file_id
-            admin_text = f"{user_info} dan fayl"
-        elif msg.voice:
-            pending[key]["type"] = "voice"
-            pending[key]["content"] = msg.voice.file_id
-            admin_text = f"{user_info} dan ovozli xabar"
-        else:
-            return
-
         keyboard = InlineKeyboardMarkup([
             [
                 InlineKeyboardButton("✅ Tasdiqlash", callback_data=f"approve_{key}"),
@@ -104,11 +81,51 @@ def forward_message(update: Update, context: CallbackContext):
             ]
         ])
 
-        context.bot.send_message(
-            chat_id=ADMIN_ID,
-            text=admin_text,
-            reply_markup=keyboard
-        )
+        if msg.text:
+            pending[key]["type"] = "text"
+            pending[key]["content"] = msg.text
+            context.bot.send_message(
+                chat_id=ADMIN_ID,
+                text=f"{user_info} dan xabar:\n\n{msg.text}",
+                reply_markup=keyboard
+            )
+        elif msg.photo:
+            pending[key]["type"] = "photo"
+            pending[key]["content"] = msg.photo[-1].file_id
+            context.bot.send_photo(
+                chat_id=ADMIN_ID,
+                photo=msg.photo[-1].file_id,
+                caption=f"{user_info} dan rasm",
+                reply_markup=keyboard
+            )
+        elif msg.video:
+            pending[key]["type"] = "video"
+            pending[key]["content"] = msg.video.file_id
+            context.bot.send_video(
+                chat_id=ADMIN_ID,
+                video=msg.video.file_id,
+                caption=f"{user_info} dan video",
+                reply_markup=keyboard
+            )
+        elif msg.document:
+            pending[key]["type"] = "document"
+            pending[key]["content"] = msg.document.file_id
+            context.bot.send_document(
+                chat_id=ADMIN_ID,
+                document=msg.document.file_id,
+                caption=f"{user_info} dan fayl",
+                reply_markup=keyboard
+            )
+        elif msg.voice:
+            pending[key]["type"] = "voice"
+            pending[key]["content"] = msg.voice.file_id
+            context.bot.send_voice(
+                chat_id=ADMIN_ID,
+                voice=msg.voice.file_id,
+                reply_markup=keyboard
+            )
+        else:
+            return
 
         msg.reply_text("Xabaringiz adminga yuborildi, tasdiqlanishini kuting.")
 
